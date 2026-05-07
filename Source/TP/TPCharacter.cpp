@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Blueprint/UserWidget.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -97,6 +98,9 @@ void ATPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATPCharacter::Look);
+
+		EnhancedInputComponent->BindAction(TabAction, ETriggerEvent::Started, this, &ATPCharacter::ShowTabScoreboard);
+		EnhancedInputComponent->BindAction(TabAction, ETriggerEvent::Completed, this, &ATPCharacter::HideTabScoreboard);
 	}
 	else
 	{
@@ -149,5 +153,25 @@ void ATPCharacter::TakeDamageAmount(float DamageAmount)
 	{
 		CurrentHealth = 0.0f;
 		bIsDead = true;
+	}
+}
+
+void ATPCharacter::ShowTabScoreboard()
+{
+	if (!TabScoreboardWidget && TabScoreboardClass)
+	{
+		TabScoreboardWidget = CreateWidget<UUserWidget>(Cast<APlayerController>(GetController()), TabScoreboardClass);
+	}
+	if (TabScoreboardWidget && !TabScoreboardWidget->IsInViewport())
+	{
+		TabScoreboardWidget->AddToViewport(10);
+	}
+}
+
+void ATPCharacter::HideTabScoreboard()
+{
+	if (TabScoreboardWidget && TabScoreboardWidget->IsInViewport())
+	{
+		TabScoreboardWidget->RemoveFromParent();
 	}
 }

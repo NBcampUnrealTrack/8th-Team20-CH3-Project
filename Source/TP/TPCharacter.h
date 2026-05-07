@@ -44,6 +44,9 @@ class ATPCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* TabAction;
+
 public:
 	ATPCharacter();
 	
@@ -82,6 +85,15 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Stats")
 	bool bIsDead;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> TabScoreboardClass;
+
+	UPROPERTY()
+	UUserWidget* TabScoreboardWidget;
+
+	void ShowTabScoreboard();
+	void HideTabScoreboard();
 	
 
 
