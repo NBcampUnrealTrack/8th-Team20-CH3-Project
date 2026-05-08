@@ -21,7 +21,7 @@ ATPGameMode::ATPGameMode()
     Score = 0;
     KillCount = 0;
     TargetKillCount = 10;
-    //Å¸ÀÌ¸Ó ½Ã°£ ¼³Á¤
+    //Å¸ï¿½Ì¸ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½
     TimeLimit = 30.0f;
     RemainingTime = TimeLimit;
 }
