@@ -9,12 +9,16 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "CombatComponent.h"
 
 AMyCharacter::AMyCharacter()
 {
     PrimaryActorTick.bCanEverTick = true;
 
     GetCapsuleComponent()->InitCapsuleSize(DefaultCapsuleRadius, DefaultCapsuleHalfHeight);
+
+    CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("ActorComponent"));
+
 
     SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     SpringArm->SetupAttachment(RootComponent);
@@ -79,6 +83,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
         // 점프
         EIC->BindAction(JumpAction, ETriggerEvent::Started, this, &AMyCharacter::Jump);
         EIC->BindAction(JumpAction, ETriggerEvent::Completed, this, &AMyCharacter::StopJumping);
+        EIC->BindAction(BasicAttackAction, ETriggerEvent::Started, this, &AMyCharacter::BasicAction);
     }
 }
 
@@ -160,6 +165,11 @@ void AMyCharacter::UpdateCharacterState()
 void AMyCharacter::UpdateMovementSpeed()
 {
     GetCharacterMovement()->MaxWalkSpeed = bIsRunning ? RunSpeed : WalkSpeed;
+}
+
+void AMyCharacter::BasicAction()
+{
+    CombatComponent->BasicAttack();
 }
 
 void AMyCharacter::UpdateCapsuleSize()

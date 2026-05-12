@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
+
 UENUM(BlueprintType)
 enum class ECharacterState : uint8
 {
@@ -86,9 +87,17 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     class UInputAction* JumpAction;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+    class UInputAction* BasicAttackAction;
+
     // 애니메이션 몽타주
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
     class UAnimMontage* JumpMontage;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
+    class UCombatComponent* CombatComponent;
+
+
 
 private:
     // ✅ Enhanced Input 콜백 (float 파라미터 제거)
@@ -103,4 +112,5 @@ private:
     void UpdateCharacterState();
     void UpdateCapsuleSize();
     void UpdateMovementSpeed();
+    void BasicAction();
 };
