@@ -1,0 +1,9 @@
+diff a/Source/TP/TPGameMode.cpp b/Source/TP/TPGameMode.cpp	(rejected hunks)
+@@ -6,6 +6,7 @@
+ #include "TimerManager.h"
+ #include "Blueprint/UserWidget.h"
+ #include "Engine/World.h"
++#include "Kismet/GameplayStatics.h"
+ 
+ ATPGameMode::ATPGameMode()
+ {
