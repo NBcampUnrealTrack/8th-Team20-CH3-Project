@@ -43,9 +43,7 @@ public:
 
 private:
     FTimerHandle GameTimerHandle;
-    FTimerHandle HealthCheckTimerHandle;
 
     void UpdateTimer();
-    void CheckPlayerHealth();
     void GameOver();
 };

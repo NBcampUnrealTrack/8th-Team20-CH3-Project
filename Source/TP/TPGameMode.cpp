@@ -6,7 +6,6 @@
 #include "TimerManager.h"
 #include "Blueprint/UserWidget.h"
 #include "Engine/World.h"
-#include "Kismet/GameplayStatics.h"
 
 ATPGameMode::ATPGameMode()
 {
@@ -59,15 +58,6 @@ void ATPGameMode::StartGame()
         true
     );
 
-    // HP 체크: 0.2초마다 실행
-    GetWorldTimerManager().SetTimer(
-        HealthCheckTimerHandle,
-        this,
-        &ATPGameMode::CheckPlayerHealth,
-        0.2f,
-        true
-    );
-
     UE_LOG(LogTemp, Warning, TEXT("===== TIMER START ====="));
 }
 
@@ -84,22 +74,9 @@ void ATPGameMode::UpdateTimer()
     }
 }
 
-void ATPGameMode::CheckPlayerHealth()
-{
-    ATPCharacter* PlayerCharacter =
-        Cast<ATPCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-
-    if (PlayerCharacter && PlayerCharacter->CurrentHealth <= 0.0f)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Player HP is 0"));
-        GameOver();
-    }
-}
-
 void ATPGameMode::GameOver()
 {
     GetWorldTimerManager().ClearTimer(GameTimerHandle);
-    GetWorldTimerManager().ClearTimer(HealthCheckTimerHandle);
 
     UE_LOG(LogTemp, Warning, TEXT("===== GAME OVER ====="));
 
