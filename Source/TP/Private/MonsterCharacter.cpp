@@ -2,6 +2,8 @@
 #include "MonsterAIController.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "../TPGameMode.h"
 
 AMonsterCharacter::AMonsterCharacter()
 {
@@ -56,6 +58,20 @@ void AMonsterCharacter::Die()
 
 	IsDead = true; // 사망 상태 설정.
 	IsAttacking = false; // 공격 상태 종료.
+
+	ATPGameMode* GameMode =
+		Cast<ATPGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	if (GameMode)
+	{
+		GameMode->Score += 100;
+		GameMode->KillCount += 1;
+
+		UE_LOG(LogTemp, Warning,
+			TEXT("Monster Dead! Score: %d KillCount: %d"),
+			GameMode->Score,
+			GameMode->KillCount);
+	}
 
 	AAIController* AICon = Cast<AAIController>(GetController());
 
