@@ -61,6 +61,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+
     // Enhanced Input Subsystem에 MappingContext 등록
     if (APlayerController* PC = Cast<APlayerController>(Controller))
     {
@@ -84,6 +85,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
         EIC->BindAction(JumpAction, ETriggerEvent::Started, this, &AMyCharacter::Jump);
         EIC->BindAction(JumpAction, ETriggerEvent::Completed, this, &AMyCharacter::StopJumping);
         EIC->BindAction(BasicAttackAction, ETriggerEvent::Started, this, &AMyCharacter::BasicAction);
+        EIC->BindAction(ThrowSkillAction, ETriggerEvent::Started,this,&AMyCharacter::ThrowSkillInput);
     }
 }
 
@@ -176,4 +178,13 @@ void AMyCharacter::UpdateCapsuleSize()
 {
     const float TargetHalfHeight = bIsRunning ? RunCapsuleHalfHeight : DefaultCapsuleHalfHeight;
     GetCapsuleComponent()->SetCapsuleSize(DefaultCapsuleRadius, TargetHalfHeight);
+}
+
+void AMyCharacter::ThrowSkillInput()
+{
+    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("dsjfsdlfjskdfjskdfjidfjksdjfsidfjsidjf"));
+    if (CombatComponent)
+    {
+        CombatComponent->ThrowSkill();
+    }
 }

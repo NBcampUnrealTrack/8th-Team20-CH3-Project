@@ -97,6 +97,9 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
     class UCombatComponent* CombatComponent;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+    class UInputAction* ThrowSkillAction;
+
 
 
 private:
@@ -113,4 +116,5 @@ private:
     void UpdateCapsuleSize();
     void UpdateMovementSpeed();
     void BasicAction();
+    void ThrowSkillInput();
 };
