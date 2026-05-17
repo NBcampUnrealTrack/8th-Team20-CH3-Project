@@ -44,6 +44,27 @@ void AMonsterCharacter::ApplyDamageToMonster(int32 DamageAmount)
 	}
 }
 
+float AMonsterCharacter::TakeDamage(
+	float DamageAmount,
+	FDamageEvent const& DamageEvent,
+	AController* EventInstigator,
+	AActor* DamageCauser
+)
+{
+	if (IsDead)
+	{
+		return 0.0f;
+	}
+
+	int32 IntDamage = FMath::RoundToInt(DamageAmount);
+
+	ApplyDamageToMonster(IntDamage);
+
+	UE_LOG(LogTemp, Warning, TEXT("Monster TakeDamage: %d / CurrentHealth: %d"), IntDamage, CurrentHealth);
+
+	return DamageAmount;
+}
+
 bool AMonsterCharacter::Dead() const
 {
 	return IsDead; // 사망 여부 반환.

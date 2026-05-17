@@ -45,4 +45,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Monster|Combat")
 	bool Dead() const; // 사망 여부 반환 함수
+
+	virtual float TakeDamage(
+		float DamageAmount,
+		struct FDamageEvent const& DamageEvent,
+		AController* EventInstigator,
+		AActor* DamageCauser
+	) override;
 };
