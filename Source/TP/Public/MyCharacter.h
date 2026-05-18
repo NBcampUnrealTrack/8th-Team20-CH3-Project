@@ -24,6 +24,52 @@ class TP_API AMyCharacter : public ACharacter
 public:
     AMyCharacter();
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+    float CurrentHealth;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+    float MaxHealth;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    int32 CurrentAmmo;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    int32 MaxAmmo;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    FString WeaponName;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Score")
+    int32 Score;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Score")
+    int32 KillCount;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mission")
+    FString MissionObjective;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mission")
+    int32 MissionProgress;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mission")
+    int32 MissionGoal;
+
+    UFUNCTION(BlueprintCallable, Category = "Stats")
+    void TakeDamageAmount(float DamageAmount);
+
+    UPROPERTY(BlueprintReadOnly, Category = "Stats")
+    bool bIsDead;
+
+    UPROPERTY(EditDefaultsOnly, Category = "UI")
+    TSubclassOf<UUserWidget> TabScoreboardClass;
+
+    UPROPERTY()
+    UUserWidget* TabScoreboardWidget;
+
+    void ShowTabScoreboard();
+    void HideTabScoreboard();
+
+
 protected:
     virtual void BeginPlay() override;
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -100,6 +146,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     class UInputAction* ThrowSkillAction;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    UInputAction* TabAction;
 
 
 private:

@@ -10,6 +10,7 @@
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
 #include "CombatComponent.h"
+#include "Blueprint/UserWidget.h"
 
 AMyCharacter::AMyCharacter()
 {
@@ -40,6 +41,18 @@ AMyCharacter::AMyCharacter()
     bUseControllerRotationPitch = false;
     bUseControllerRotationYaw = false;
     bUseControllerRotationRoll = false;
+
+    MaxHealth = 100.0f;
+    CurrentHealth = MaxHealth;
+    MaxAmmo = 30;
+    CurrentAmmo = MaxAmmo;
+    WeaponName = TEXT("Rifle");
+    Score = 0;
+    KillCount = 0;
+    MissionObjective = TEXT("Eliminate Targets");
+    MissionProgress = 0;
+    MissionGoal = 10;
+    bIsDead = false;
 }
 
 void AMyCharacter::BeginPlay()
@@ -61,6 +74,11 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+    if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+    {
+        EnhancedInputComponent->BindAction(TabAction, ETriggerEvent::Started, this, &AMyCharacter::ShowTabScoreboard);
+        EnhancedInputComponent->BindAction(TabAction, ETriggerEvent::Completed, this, &AMyCharacter::HideTabScoreboard);
+    }
 
     // Enhanced Input Subsystem에 MappingContext 등록
     if (APlayerController* PC = Cast<APlayerController>(Controller))
@@ -186,5 +204,37 @@ void AMyCharacter::ThrowSkillInput()
     if (CombatComponent)
     {
         CombatComponent->ThrowSkill();
+    }
+}
+
+void AMyCharacter::TakeDamageAmount(float DamageAmount)
+{
+    if (bIsDead) return;
+
+    CurrentHealth -= DamageAmount;
+    if (CurrentHealth <= 0.0f)
+    {
+        CurrentHealth = 0.0f;
+        bIsDead = true;
+    }
+}
+
+void AMyCharacter::ShowTabScoreboard()
+{
+    if (!TabScoreboardWidget && TabScoreboardClass)
+    {
+        TabScoreboardWidget = CreateWidget<UUserWidget>(Cast<APlayerController>(GetController()), TabScoreboardClass);
+    }
+    if (TabScoreboardWidget && !TabScoreboardWidget->IsInViewport())
+    {
+        TabScoreboardWidget->AddToViewport(10);
+    }
+}
+
+void AMyCharacter::HideTabScoreboard()
+{
+    if (TabScoreboardWidget && TabScoreboardWidget->IsInViewport())
+    {
+        TabScoreboardWidget->RemoveFromParent();
     }
 }
