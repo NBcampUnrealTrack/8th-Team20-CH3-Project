@@ -40,6 +40,9 @@ public:
 public:
     UFUNCTION(BlueprintCallable, Category = "Game Rule")
     void StartGame();
+    
+    UFUNCTION(BlueprintPure, Category = "Game Rule")
+    FText GetFormattedTime() const;
 
 private:
     FTimerHandle GameTimerHandle;

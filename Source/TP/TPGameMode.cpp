@@ -22,8 +22,8 @@ ATPGameMode::ATPGameMode()
     Score = 0;
     KillCount = 0;
     TargetKillCount = 10;
-    //Ÿ�̸� �ð� ����
-    TimeLimit = 30.0f;
+    //타이머 설정
+    TimeLimit = 120.0f;
     RemainingTime = TimeLimit;
 }
 
@@ -113,4 +113,16 @@ void ATPGameMode::GameOver()
             GameOverWidget->AddToViewport();
         }
     }
+}
+
+FText ATPGameMode::GetFormattedTime() const
+{
+    int32 TotalSeconds = FMath::Max(0, FMath::FloorToInt(RemainingTime));
+
+    int32 Minutes = TotalSeconds / 60;
+    int32 Seconds = TotalSeconds % 60;
+
+    FString TimeString = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
+
+    return FText::FromString(TimeString);
 }
