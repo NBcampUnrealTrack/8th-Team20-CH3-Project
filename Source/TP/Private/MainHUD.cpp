@@ -8,7 +8,8 @@ void AMainHUD::BeginPlay()
 
 	FString CurrentLevelName = GetWorld()->GetMapName();
 	if (CurrentLevelName.Contains(TEXT("TitleLevel")) ||
-		CurrentLevelName.Contains(TEXT("MainMenuLevel")))
+		CurrentLevelName.Contains(TEXT("MainMenuLevel")) ||
+		CurrentLevelName.Contains(TEXT("LoadingLevel")))
 	{
 		return;
 	}

@@ -34,7 +34,8 @@ void ATPGameMode::BeginPlay()
     FString CurrentLevelName = GetWorld()->GetMapName();
 
     if (CurrentLevelName.Contains(TEXT("TitleLevel")) ||
-        CurrentLevelName.Contains(TEXT("MainMenuLevel")))
+        CurrentLevelName.Contains(TEXT("MainMenuLevel")) ||
+        CurrentLevelName.Contains(TEXT("LoadingLevel")))
     {
         UE_LOG(LogTemp, Warning, TEXT("===== MENU LEVEL: TIMER NOT STARTED ====="));
         return;
