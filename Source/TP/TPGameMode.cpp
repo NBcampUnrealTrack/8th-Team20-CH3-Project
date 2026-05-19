@@ -1,7 +1,7 @@
 //TPGameMode.cpp
 
 #include "TPGameMode.h"
-#include "TPCharacter.h"
+#include "MyCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 #include "TimerManager.h"
 #include "Blueprint/UserWidget.h"
@@ -11,7 +11,7 @@
 ATPGameMode::ATPGameMode()
 {
     static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(
-        TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter")
+        TEXT("/Game/Blueprint/BP_MyCharacter")
     );
 
     if (PlayerPawnBPClass.Class != NULL)
@@ -86,8 +86,8 @@ void ATPGameMode::UpdateTimer()
 
 void ATPGameMode::CheckPlayerHealth()
 {
-    ATPCharacter* PlayerCharacter =
-        Cast<ATPCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    AMyCharacter* PlayerCharacter =
+        Cast<AMyCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
     if (PlayerCharacter && PlayerCharacter->CurrentHealth <= 0.0f)
     {
