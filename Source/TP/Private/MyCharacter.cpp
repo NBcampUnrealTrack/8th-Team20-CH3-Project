@@ -46,6 +46,11 @@ AMyCharacter::AMyCharacter()
     CurrentHealth = MaxHealth;
     MaxAmmo = 30;
     CurrentAmmo = MaxAmmo;
+    ReserveAmmo = 90;
+    ReloadTime = 1.5f;
+    bIsReloading = false;
+    GrenadeCount = 3;
+
     WeaponName = TEXT("Rifle");
     Score = 0;
     KillCount = 0;
@@ -103,6 +108,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
         EIC->BindAction(JumpAction, ETriggerEvent::Started, this, &AMyCharacter::Jump);
         EIC->BindAction(JumpAction, ETriggerEvent::Completed, this, &AMyCharacter::StopJumping);
         EIC->BindAction(BasicAttackAction, ETriggerEvent::Started, this, &AMyCharacter::BasicAction);
+        EIC->BindAction(ReloadAction, ETriggerEvent::Started, this, &AMyCharacter::ReloadInput);
         EIC->BindAction(ThrowSkillAction, ETriggerEvent::Started,this,&AMyCharacter::ThrowSkillInput);
     }
 }
@@ -189,7 +195,69 @@ void AMyCharacter::UpdateMovementSpeed()
 
 void AMyCharacter::BasicAction()
 {
-    CombatComponent->BasicAttack();
+    if (bIsReloading)
+    {
+        return;
+    }
+
+    if (CurrentAmmo <= 0)
+    {
+        ReloadInput();
+        return;
+    }
+
+    CurrentAmmo--;
+
+    if (CombatComponent)
+    {
+        CombatComponent->BasicAttack();
+    }
+
+    UE_LOG(LogTemp, Warning, TEXT("Ammo: %d / %d"), CurrentAmmo, ReserveAmmo);
+}
+
+void AMyCharacter::ReloadInput()
+{
+    if (bIsReloading)
+    {
+        return;
+    }
+
+    if (CurrentAmmo >= MaxAmmo)
+    {
+        return;
+    }
+
+    if (ReserveAmmo <= 0)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("No Reserve Ammo"));
+        return;
+    }
+
+    bIsReloading = true;
+
+    UE_LOG(LogTemp, Warning, TEXT("Reloading..."));
+
+    GetWorldTimerManager().SetTimer(
+        ReloadTimerHandle,
+        this,
+        &AMyCharacter::FinishReload,
+        ReloadTime,
+        false
+    );
+}
+
+void AMyCharacter::FinishReload()
+{
+    const int32 NeededAmmo = MaxAmmo - CurrentAmmo;
+    const int32 AmmoToReload = FMath::Min(NeededAmmo, ReserveAmmo);
+
+    CurrentAmmo += AmmoToReload;
+    ReserveAmmo -= AmmoToReload;
+
+    bIsReloading = false;
+
+    UE_LOG(LogTemp, Warning, TEXT("Reload Complete: %d / %d"), CurrentAmmo, ReserveAmmo);
 }
 
 void AMyCharacter::UpdateCapsuleSize()
@@ -200,7 +268,28 @@ void AMyCharacter::UpdateCapsuleSize()
 
 void AMyCharacter::ThrowSkillInput()
 {
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("dsjfsdlfjskdfjskdfjidfjksdjfsidfjsidjf"));
+    if (GrenadeCount <= 0)
+    {
+        GEngine->AddOnScreenDebugMessage
+        (
+            -1,
+            2.f,
+            FColor::Red,
+            TEXT("No Grenades")
+        );
+
+        return;
+    }
+
+    GrenadeCount--;
+
+    GEngine->AddOnScreenDebugMessage(
+        -1,
+        2.f,
+        FColor::Green,
+        FString::Printf(TEXT("Grenades Left : %d"), GrenadeCount)
+    );
+
     if (CombatComponent)
     {
         CombatComponent->ThrowSkill();

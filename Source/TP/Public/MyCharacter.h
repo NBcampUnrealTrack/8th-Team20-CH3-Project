@@ -37,6 +37,18 @@ public:
     int32 MaxAmmo;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    int32 ReserveAmmo = 90;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    float ReloadTime = 1.5f;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+    bool bIsReloading = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grenade")
+    int32 GrenadeCount = 3;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     FString WeaponName;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Score")
@@ -136,6 +148,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     class UInputAction* BasicAttackAction;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+    class UInputAction* ReloadAction;
+
     // 애니메이션 몽타주
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
     class UAnimMontage* JumpMontage;
@@ -163,6 +178,12 @@ private:
     void UpdateCharacterState();
     void UpdateCapsuleSize();
     void UpdateMovementSpeed();
-    void BasicAction();
+    void BasicAction(); 
+    
+    void ReloadInput();
+    void FinishReload();
+
     void ThrowSkillInput();
+
+    FTimerHandle ReloadTimerHandle;
 };
