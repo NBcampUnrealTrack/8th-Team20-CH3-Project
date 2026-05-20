@@ -217,6 +217,8 @@ void AMyCharacter::TakeDamageAmount(float DamageAmount)
         CurrentHealth = 0.0f;
         bIsDead = true;
     }
+
+    UE_LOG(LogTemp, Warning, TEXT("TakeDamage 들어옴"));
 }
 
 void AMyCharacter::ShowTabScoreboard()

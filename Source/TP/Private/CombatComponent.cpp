@@ -3,6 +3,7 @@
 
 #include "CombatComponent.h"
 #include "ThrowProjectile.h"
+#include "MonsterCharacter.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
@@ -57,17 +58,22 @@ void UCombatComponent::BasicAttack()
     {
         AActor* HitActor = HitResult.GetActor();
 
-        if (HitActor != nullptr)
+        if (HitActor)
         {
-            UGameplayStatics::ApplyDamage(
-                HitActor,
-                BasicAttackDamage,
-                Owner->GetInstigatorController(),
-                Owner,
-                nullptr
-            );
+            AMonsterCharacter* Monster = Cast<AMonsterCharacter>(HitActor);
 
-            UE_LOG(LogTemp, Warning, TEXT("Basic Attack Hit: %s"), *HitActor->GetName());
+            if (Monster) 
+            {
+                UGameplayStatics::ApplyDamage(
+                    Monster,
+                    BasicAttackDamage,
+                    Owner->GetInstigatorController(),
+                    Owner,
+                    UDamageType::StaticClass()
+                );
+
+                UE_LOG(LogTemp, Warning, TEXT("좀비 피격: %s"), *Monster->GetName());
+            }
         }
     }
 }

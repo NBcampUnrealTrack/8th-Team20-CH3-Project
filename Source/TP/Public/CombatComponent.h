@@ -17,7 +17,6 @@ public:
 public:
     void BasicAttack();
     void ThrowSkill();
-
 private:
     UPROPERTY(EditAnywhere, Category = "Basic Attack")
     float BasicAttackDamage = 25.0f;
