@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Animation/AnimMontage.h"
 #include "MonsterCharacter.generated.h"
 
 UCLASS()
@@ -14,7 +15,12 @@ public:
 
 protected:
 	virtual void BeginPlay() override; // 게임 시작 시 호출
+	UFUNCTION(BlueprintCallable)
 	virtual void Die(); // 몬스터 사망 처리 함수
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	UAnimMontage* HitMontage;
+	void PlayHitAnimation();
 
 public:
 	bool IsAttacking = false; // 현재 공격 중인지 확인하는 변수
@@ -49,7 +55,7 @@ public:
 	virtual float TakeDamage(
 		float DamageAmount,
 		struct FDamageEvent const& DamageEvent,
-		AController* EventInstigator,
-		AActor* DamageCauser
+		class AController* EventInstigator,
+		class AActor* DamageCauser
 	) override;
 };
