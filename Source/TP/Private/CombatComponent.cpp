@@ -62,7 +62,7 @@ void UCombatComponent::BasicAttack()
         {
             AMonsterCharacter* Monster = Cast<AMonsterCharacter>(HitActor);
 
-            if (Monster) 
+            if (Monster)
             {
                 UGameplayStatics::ApplyDamage(
                     Monster,
@@ -70,6 +70,15 @@ void UCombatComponent::BasicAttack()
                     Owner->GetInstigatorController(),
                     Owner,
                     UDamageType::StaticClass()
+                );
+
+                bHitEnemy = true;
+                GetWorld()->GetTimerManager().SetTimer(
+                    HitIndicatorTimerHandle,
+                    this,
+                    &UCombatComponent::ResetHitIndicator,
+                    0.15f,
+                    false
                 );
 
                 UE_LOG(LogTemp, Warning, TEXT("좀비 피격: %s"), *Monster->GetName());
@@ -135,5 +144,10 @@ void UCombatComponent::ResetThrowCooldown()
     bCanUseThrowSkill = true;
 
     UE_LOG(LogTemp, Warning, TEXT("Throw Skill Ready"));
+}
+
+void UCombatComponent::ResetHitIndicator()
+{
+    bHitEnemy = false;
 }
 

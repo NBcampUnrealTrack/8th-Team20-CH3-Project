@@ -17,6 +17,10 @@ public:
 public:
     void BasicAttack();
     void ThrowSkill();
+
+    UPROPERTY(BlueprintReadOnly, Category = "Combat")
+    bool bHitEnemy = false;
+
 private:
     UPROPERTY(EditAnywhere, Category = "Basic Attack")
     float BasicAttackDamage = 25.0f;
@@ -33,7 +37,9 @@ private:
     bool bCanUseThrowSkill = true;
 
     FTimerHandle ThrowCooldownTimerHandle;
+    FTimerHandle HitIndicatorTimerHandle;
 
 private:
     void ResetThrowCooldown();
+    void ResetHitIndicator();
 };
