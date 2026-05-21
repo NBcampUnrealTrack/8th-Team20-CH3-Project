@@ -54,7 +54,7 @@ AMyCharacter::AMyCharacter()
     WeaponName = TEXT("Rifle");
     Score = 0;
     KillCount = 0;
-    MissionObjective = TEXT("Eliminate Targets");
+    MissionObjective = TEXT("Eliminate All Targets");
     MissionProgress = 0;
     MissionGoal = 10;
     bIsDead = false;
