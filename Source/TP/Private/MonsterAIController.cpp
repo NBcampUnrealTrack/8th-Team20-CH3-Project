@@ -2,10 +2,13 @@
 
 #include "MonsterAIController.h"
 #include "Kismet/GameplayStatics.h"
+#include "Zombie.h"
 
 void AMonsterAIController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CachedZombie = Cast<AZombie>(GetPawn());
 
 	GetWorldTimerManager().SetTimer(
 		AITimerHandle, // 타이머를 구분하기 위한 핸들.
@@ -44,7 +47,7 @@ void AMonsterAIController::UpdateAI()
 		}
 	}
 
-	if (DistanceToPlayer > LoseRadius) // 플레이어가 탐지 거리보다 멀어졌다면...
+	if (DistanceToPlayer > CachedZombie->LoseRadius) // 플레이어가 탐지 거리보다 멀어졌다면...
 	{
 		bHasDetectedPlayer = false; // 플레이어 발견 변수 false.
 		StopChase(); // 이동 멈춤.
@@ -56,18 +59,24 @@ void AMonsterAIController::UpdateAI()
 
 bool AMonsterAIController::CanDetectPlayer(APawn* PlayerPawn) const
 {
-	APawn* MonsterPawn = GetPawn(); // 이 AIContrioller가 조종 중인 몬스터 pawn 가져오기.
-
-	if (!PlayerPawn || !MonsterPawn) // 플레이어나 몬스터가 없으면...
+	APawn* ControlledPawn = GetPawn();
+	if (!ControlledPawn || !PlayerPawn)
 	{
-		return false; // 탐지 실패, false 반환.
+		return false;
 	}
-	 
-	float DistanceToPlayer = FVector::Dist(  // 둘 사이의 거리 계산.
-		MonsterPawn->GetActorLocation(), // 몬스터 위치.
-		PlayerPawn->GetActorLocation() // 플레이어 위치.
+
+	AZombie* Zombie = Cast<AZombie>(ControlledPawn);
+	if (!Zombie)
+	{
+		return false;
+	}
+
+	float Distance = FVector::Dist(
+		ControlledPawn->GetActorLocation(),
+		PlayerPawn->GetActorLocation()
 	);
-	return DistanceToPlayer <= DetectRadius; // 탐지 거리 안이면 true 반환.
+
+	return Distance <= Zombie->DetectRadius;
 }
 
 void AMonsterAIController::ChasePlayer(APawn* PlayerPawn) 
