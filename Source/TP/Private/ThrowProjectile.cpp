@@ -7,6 +7,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
+#include "Engine/OverlapResult.h"
 
 AThrowProjectile::AThrowProjectile()
 {
@@ -45,17 +46,67 @@ void AThrowProjectile::OnProjectileHit(
 
 void AThrowProjectile::Explode()
 {
-    UGameplayStatics::ApplyRadialDamage(
-        GetWorld(),
-        ExplosionDamage,
+    TArray<FOverlapResult> OverlapResults;
+
+    FCollisionShape Sphere = FCollisionShape::MakeSphere(ExplosionRadius);
+
+    FCollisionQueryParams QueryParams;
+    QueryParams.AddIgnoredActor(this);
+
+    bool bHasOverlap = GetWorld()->OverlapMultiByObjectType(
+        OverlapResults,
         GetActorLocation(),
-        ExplosionRadius,
-        nullptr,
-        TArray<AActor*>(),
-        this,
-        GetInstigatorController(),
-        true
+        FQuat::Identity,
+        FCollisionObjectQueryParams(ECC_Pawn),
+        Sphere,
+        QueryParams
     );
+
+    if (bHasOverlap)
+    {
+        for (const FOverlapResult& Result : OverlapResults)
+        {
+            AActor* HitActor = Result.GetActor();
+
+            if (!HitActor)
+            {
+                continue;
+            }
+
+            FVector Start = GetActorLocation();
+            FVector End = HitActor->GetActorLocation();
+
+            FHitResult BlockHit;
+
+            FCollisionQueryParams LineParams;
+            LineParams.AddIgnoredActor(this);
+            LineParams.AddIgnoredActor(HitActor);
+
+            bool bBlocked = GetWorld()->LineTraceSingleByChannel(
+                BlockHit,
+                Start,
+                End,
+                ECC_Visibility,
+                LineParams
+            );
+
+            // 중간에 벽이나 오브젝트가 막고 있으면 스킵
+            if (bBlocked)
+            {
+                continue;
+            }
+
+            UGameplayStatics::ApplyDamage(
+                HitActor,
+                ExplosionDamage,
+                GetInstigatorController(),
+                this,
+                nullptr
+            );
+
+            UE_LOG(LogTemp, Warning, TEXT("Hit Actor: %s"), *HitActor->GetName());
+        }
+    }
 
     DrawDebugSphere(
         GetWorld(),
