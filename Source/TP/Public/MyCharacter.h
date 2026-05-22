@@ -4,7 +4,6 @@
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
-
 UENUM(BlueprintType)
 enum class ECharacterState : uint8
 {
@@ -15,7 +14,6 @@ enum class ECharacterState : uint8
     Falling     UMETA(DisplayName = "Falling"),
 };
 
-// ✅ MYGAME_API → TP_API 로 수정
 UCLASS()
 class TP_API AMyCharacter : public ACharacter
 {
@@ -81,10 +79,11 @@ public:
     void ShowTabScoreboard();
     void HideTabScoreboard();
 
-
 protected:
     virtual void BeginPlay() override;
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+    // ★ 추가: 컨트롤러 연결 후 MappingContext 등록
+    virtual void NotifyControllerChanged() override;
 
 public:
     virtual void Tick(float DeltaTime) override;
@@ -105,6 +104,10 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Speed")
     float JumpZVelocity = 600.f;
+
+    // ★ 추가: 마우스 방향 몸 보간 회전 속도
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Rotation")
+    float RotationInterpSpeed = 10.f;
 
     // 캡슐 크기
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Capsule")
@@ -129,7 +132,7 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
     float CurrentSpeed = 0.f;
 
-    // ✅ Enhanced Input Actions (에디터에서 할당)
+    // Enhanced Input
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     class UInputMappingContext* DefaultMappingContext;
 
@@ -151,6 +154,12 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     class UInputAction* ReloadAction;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+    class UInputAction* ThrowSkillAction;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+    UInputAction* TabAction;
+
     // 애니메이션 몽타주
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
     class UAnimMontage* JumpMontage;
@@ -158,15 +167,7 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
     class UCombatComponent* CombatComponent;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    class UInputAction* ThrowSkillAction;
-
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-    UInputAction* TabAction;
-
-
 private:
-    // ✅ Enhanced Input 콜백 (float 파라미터 제거)
     void Move(const struct FInputActionValue& Value);
     void Look(const struct FInputActionValue& Value);
     void StartRun();
@@ -175,14 +176,16 @@ private:
     virtual void Jump() override;
     virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode) override;
 
+    // ★ 추가: 마우스 Yaw → 캐릭터 몸 보간 회전
+    void RotateCharacterToController(float DeltaTime);
+
     void UpdateCharacterState();
     void UpdateCapsuleSize();
     void UpdateMovementSpeed();
-    void BasicAction(); 
-    
+
+    void BasicAction();
     void ReloadInput();
     void FinishReload();
-
     void ThrowSkillInput();
 
     FTimerHandle ReloadTimerHandle;
