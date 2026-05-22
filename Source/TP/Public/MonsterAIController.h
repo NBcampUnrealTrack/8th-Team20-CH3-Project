@@ -24,6 +24,6 @@ private:
 	bool bHasDetectedPlayer = false; // 플레이어를 발견했는지 저장하는 변수.
 
 	float AIUpdateInterval = 0.2f; // ai 판단을 몇 초마다 갱신할지 정하는 변수.
-	float DetectRadius = 800.0f; // 몬스터 인식 사거리.
-	float LoseRadius = 1200.0f; // 몬스터 인식 해제 사거리.
+	
+	class AZombie* CachedZombie = nullptr;
 };

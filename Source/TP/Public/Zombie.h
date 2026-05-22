@@ -35,6 +35,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Zombie|Attack")
 	bool bisAttacking = false; // 현재 공격 중인지 여부
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zombie|AI")
+	float DetectRadius = 800.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zombie|AI")
+	float LoseRadius = 1200.0f;
+
 private:
 	bool bCanAttack = true; // 공격 가능 여부 체크
 
