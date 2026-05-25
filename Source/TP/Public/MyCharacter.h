@@ -2,6 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
+class ABulletProjectile;
+
 #include "MyCharacter.generated.h"
 
 UENUM(BlueprintType)

@@ -9,6 +9,7 @@
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
 #include "CombatComponent.h"
+#include "BulletProjectile.h"
 #include "Blueprint/UserWidget.h"
 
 AMyCharacter::AMyCharacter()
