@@ -2,10 +2,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-
-class ABulletProjectile;
-
+#include "Blueprint/UserWidget.h"
 #include "MyCharacter.generated.h"
+
+class UCombatComponent;
+class UInputMappingContext;
+class UInputAction;
+class UAnimMontage;
+struct FInputActionValue;
 
 UENUM(BlueprintType)
 enum class ECharacterState : uint8
@@ -88,20 +92,17 @@ public:
 protected:
     virtual void BeginPlay() override;
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-    // ★ 추가: 컨트롤러 연결 후 MappingContext 등록
     virtual void NotifyControllerChanged() override;
 
 public:
     virtual void Tick(float DeltaTime) override;
 
-    // 컴포넌트
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
     class USpringArmComponent* SpringArm;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
     class UCameraComponent* Camera;
 
-    // 이동 속도
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Speed")
     float WalkSpeed = 400.f;
 
@@ -111,11 +112,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Speed")
     float JumpZVelocity = 600.f;
 
-    // ★ 추가: 마우스 방향 몸 보간 회전 속도
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Rotation")
     float RotationInterpSpeed = 10.f;
 
-    // 캡슐 크기
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Capsule")
     float DefaultCapsuleHalfHeight = 88.f;
 
@@ -125,7 +124,6 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Capsule")
     float RunCapsuleHalfHeight = 80.f;
 
-    // 상태
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
     ECharacterState CharacterState = ECharacterState::Idle;
 
@@ -138,53 +136,64 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
     float CurrentSpeed = 0.f;
 
-    // Enhanced Input
+    // ── Enhanced Input 에셋 매칭명으로 직관화 ──────────────────
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    class UInputMappingContext* DefaultMappingContext;
+    UInputMappingContext* DefaultMappingContext;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    class UInputAction* MoveAction;
+    UInputAction* MoveAction;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    class UInputAction* LookAction;
+    UInputAction* LookAction;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    class UInputAction* RunAction;
+    UInputAction* RunAction;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    class UInputAction* JumpAction;
+    UInputAction* JumpAction;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    class UInputAction* BasicAttackAction;
+    UInputAction* FireAction;          // IA_Fire 매칭용
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    class UInputAction* ReloadAction;
+    UInputAction* ReloadAction;        // IA_Reload_Am 매칭용
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    class UInputAction* ThrowSkillAction;
+    UInputAction* ThrowAction;         // IA_Grow_Throw 매칭용
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
     UInputAction* TabAction;
 
-    // 애니메이션 몽타주
+    // ── 애니메이션 몽타주 (★ 사격 몽타주 추가) ──────────────────
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
-    class UAnimMontage* JumpMontage;
+    UAnimMontage* JumpMontage;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+    UAnimMontage* ShootMontage;        // ★ 추가 완료!
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+    UAnimMontage* ThrowGrenadeMontage;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+    UAnimMontage* ReloadMontage;
+
+    UFUNCTION(BlueprintCallable, Category = "Animation")
+    void PlayCharacterMontage(UAnimMontage* MontageToPlay);
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
-    class UCombatComponent* CombatComponent;
+    UCombatComponent* CombatComponent;
 
 private:
-    void Move(const struct FInputActionValue& Value);
-    void Look(const struct FInputActionValue& Value);
+    void Move(const FInputActionValue& Value);
+    void Look(const FInputActionValue& Value);
     void StartRun();
     void StopRun();
 
     virtual void Jump() override;
+    virtual void StopJumping() override;
     virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode) override;
 
-    // ★ 추가: 마우스 Yaw → 캐릭터 몸 보간 회전
     void RotateCharacterToController(float DeltaTime);
-
     void UpdateCharacterState();
     void UpdateCapsuleSize();
     void UpdateMovementSpeed();
