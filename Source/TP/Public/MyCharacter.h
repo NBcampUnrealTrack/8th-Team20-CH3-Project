@@ -49,6 +49,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     FString WeaponName;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+    class UStaticMeshComponent* WeaponMesh;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Score")
     int32 Score;
 

@@ -45,14 +45,14 @@ void UCombatComponent::BasicAttack()
         Params
     );
 
-    DrawDebugLine(
+    /*DrawDebugLine(
         GetWorld(),
         Start,
         End,
         FColor::Red,
         false,
         1.0f
-    );
+    ); */
 
     if (bHit)
     {

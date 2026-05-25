@@ -19,6 +19,9 @@ AMyCharacter::AMyCharacter()
 
     CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("ActorComponent"));
 
+    WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
+    WeaponMesh->SetupAttachment(GetMesh(), TEXT("WeaponSocket"));
+
     // ── 스프링 암 ────────────────────────────────
     SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     SpringArm->SetupAttachment(RootComponent);
