@@ -108,7 +108,7 @@ void AThrowProjectile::Explode()
         }
     }
 
-    DrawDebugSphere(
+    /*DrawDebugSphere(
         GetWorld(),
         GetActorLocation(),
         ExplosionRadius,
@@ -116,7 +116,7 @@ void AThrowProjectile::Explode()
         FColor::Orange,
         false,
         2.0f
-    );
+    );*/
 
     UE_LOG(LogTemp, Warning, TEXT("Projectile Exploded"));
 
