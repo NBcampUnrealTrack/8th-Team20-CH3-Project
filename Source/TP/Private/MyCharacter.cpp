@@ -206,6 +206,7 @@ void AMyCharacter::UpdateCapsuleSize()
 
 void AMyCharacter::BasicAction()
 {
+    UE_LOG(LogTemp, Warning, TEXT("Ammo: %d / %d"), CurrentAmmo, ReserveAmmo);
     if (bIsReloading || bIsDead) return;
 
     if (CurrentAmmo <= 0)
