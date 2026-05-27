@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/OverlapResult.h"
+#include "Particles/ParticleSystemComponent.h"
 
 AThrowProjectile::AThrowProjectile()
 {
@@ -119,6 +120,24 @@ void AThrowProjectile::Explode()
     );*/
 
     UE_LOG(LogTemp, Warning, TEXT("Projectile Exploded"));
+
+    if (MyParticleEffect)
+    {
+        UParticleSystemComponent* EffectComp =
+            UGameplayStatics::SpawnEmitterAtLocation(
+                GetWorld(),
+                MyParticleEffect,
+                GetActorLocation(),
+                GetActorRotation(),
+                true
+            );
+
+        if (EffectComp)
+        {
+            EffectComp->bAutoDestroy = true;
+            EffectComp->DeactivateSystem();
+        }
+    }
 
     Destroy();
 }

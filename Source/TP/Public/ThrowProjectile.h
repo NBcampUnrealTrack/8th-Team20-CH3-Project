@@ -6,6 +6,7 @@
 
 class UStaticMeshComponent;
 class UProjectileMovementComponent;
+class UParticleSystem;
 
 UCLASS()
 class TP_API AThrowProjectile : public AActor
@@ -30,6 +31,9 @@ private:
 
     UPROPERTY(EditAnywhere, Category = "Damage")
     float ExplosionRadius = 400.0f;
+
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    UParticleSystem* MyParticleEffect;
 
 private:
     UFUNCTION()
